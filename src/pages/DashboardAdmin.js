@@ -75,6 +75,7 @@ const DashboardAdmin = () => {
                                 <tr>
                                     <th>No</th>
                                     <th>Booking Code</th>
+                                    <th>Car Image</th>
                                     <th>Fullname</th>
                                     <th>Car Model</th>
                                     <th>Car Name</th>
@@ -91,6 +92,7 @@ const DashboardAdmin = () => {
                                         <tr class="table-success">
                                             <td>{index + 1}</td>
                                             <td>{result.booking_code ?? ''}</td>
+                                            <td><img src={result?.rent_detail?.car_img} alt='Vehicle' width={100} /></td>
                                             <td>{result?.user?.name} {result?.user?.last_name}</td>
                                             <td>{result?.rent_detail?.car_model}</td>
                                             <td>{result?.rent_detail?.car_name}</td>
