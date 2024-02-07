@@ -34,7 +34,7 @@ const HomeDefault = () => {
     // Axios.get("https://backend.avis-id.com/public/sanctum/csrf-cookie",{withCredentials: true}).then((resp)=>{
     Axios.post(
       // `${API_URL}/api/auth/signin`,
-      `${API_URL}/api/auth/signin/admin`,
+      `${API_URL}/api/auth/signinAdminAvis`,
       {
         email: email,
         password: password,
@@ -52,8 +52,8 @@ const HomeDefault = () => {
         alert(res.data.msg);
       } else {
         localStorage.setItem("token", res.data.token);
-        localStorage.setItem("name", res.data.name);
-        localStorage.setItem("customer_id", res.data.customer_id);
+        localStorage.setItem("email", res.data.email);
+        localStorage.setItem("name", res.data.email);
         const expires = new Date();
         expires.setTime(expires.getTime() + 21600 * 1000);
         document.cookie = `subscribe=true;expires=${expires.toUTCString()};path=/`;

@@ -20,7 +20,7 @@ const Nav = (props) => {
             <Link to={process.env.PUBLIC_URL + `/`}>Booking & Transactions</Link>
           </li>
           <li className="dropdown">
-            <a href={process.env.PUBLIC_URL + `#`}>Sign Out</a>
+            <a href={process.env.PUBLIC_URL + `#`} onClick={() => { localStorage.clear(); window.location.href = '/' }}>Sign Out</a>
           </li>
         </ul>
       </div>
