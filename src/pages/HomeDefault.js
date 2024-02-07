@@ -48,18 +48,16 @@ const HomeDefault = () => {
       }
     ).then((res) => {
       console.log(res.data);
-      if (res.data.status == false) {
-        alert(res.data.msg);
-      } else {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("email", res.data.email);
-        localStorage.setItem("name", res.data.email);
-        const expires = new Date();
-        expires.setTime(expires.getTime() + 21600 * 1000);
-        document.cookie = `subscribe=true;expires=${expires.toUTCString()};path=/`;
-        window.location.reload();
-      }
-    });
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("email", res.data.email);
+      localStorage.setItem("name", res.data.email);
+      const expires = new Date();
+      expires.setTime(expires.getTime() + 21600 * 1000);
+      document.cookie = `subscribe=true;expires=${expires.toUTCString()};path=/`;
+      window.location.href = "/dashboard";
+    }).catch((err) => {
+      alert(err.response.data.msg);
+    })
     // });
   };
   return (
