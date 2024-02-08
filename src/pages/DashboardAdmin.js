@@ -42,13 +42,15 @@ const DashboardAdmin = () => {
             $('#example').DataTable();
         });
 
-        $('.dateadded').on('change', function (ret) {
 
-            var v = formatDate(ret.target.value)  // getting search input value
-            console.log(v);
-            $('#example').DataTable().columns(6).search(v).draw();
-        });
     }
+
+    $('.dateadded').on('change', function (ret) {
+
+        var v = formatDate(ret.target.value)  // getting search input value
+        console.log(v);
+        $('#example').DataTable().columns(7).search(v).draw();
+    });
 
 
     // Title ('Avis ID User Panel')
