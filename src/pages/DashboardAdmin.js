@@ -46,10 +46,14 @@ const DashboardAdmin = () => {
     }
 
     $('.dateadded').on('change', function (ret) {
+        if (ret.target.value === "") {
+            window.location.reload()
+        }
+        else {
+            var v = formatDate(ret.target.value)  // getting search input value
 
-        var v = formatDate(ret.target.value)  // getting search input value
-        console.log(v);
-        $('#example').DataTable().columns(7).search(v).draw();
+            $('#example').DataTable().columns(7).search(v).draw();
+        }
     });
 
 
