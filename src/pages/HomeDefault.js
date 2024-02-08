@@ -30,7 +30,9 @@ const HomeDefault = () => {
     }
   }, []);
 
-  const submit = () => {
+  const submit = (e) => {
+    e.preventDefault();
+
     // Axios.get("https://backend.avis-id.com/public/sanctum/csrf-cookie",{withCredentials: true}).then((resp)=>{
     Axios.post(
       // `${API_URL}/api/auth/signin`,
@@ -62,7 +64,7 @@ const HomeDefault = () => {
   };
   return (
     <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
-      <form action="#" style={{ width: "600px" }} className="card">
+      <form action="#" style={{ width: "600px" }} className="card" onSubmit={(e) => submit(e)}>
         <div className="container p-5">
           <div className="d-flex justify-content-center">
             <h4 style={{ color: "#000" }}>
@@ -113,7 +115,7 @@ const HomeDefault = () => {
           </div>
           <div className="row pt-3 justify-content-center">
             <button
-              onClick={() => submit()}
+              type="submit"
               className="ml-2 mr-2 col-xl-12 btn btn-avis"
             >
               LOG IN
