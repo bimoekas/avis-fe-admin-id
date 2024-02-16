@@ -286,6 +286,7 @@ function Profile(props) {
         }).catch((error) => {
             if (error.response.status === 401) {
                 alert('Your session has expired');
+                localStorage.clear()
                 window.location.href = '/';
             }
         });
