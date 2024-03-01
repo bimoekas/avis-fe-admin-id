@@ -11,6 +11,8 @@ import $ from 'jquery';
 
 const DashboardAdmin = () => {
     const [transactions, setTransactions] = useState([]);
+    const [adminTax, setAdminTax] = useState(0);
+    const [isLoading, setLoading] = useState(false)
 
     const formatDate = (va) => {
         const options = { month: 'long', day: 'numeric', year: 'numeric' };
@@ -18,6 +20,28 @@ const DashboardAdmin = () => {
         return date.toLocaleDateString(undefined, options);
     }
 
+    const handleChangeTax = async () => {
+        setLoading(true)
+        await Axios.put(
+            `${API_URL}/api/booking/tax`,
+            {
+                tax: adminTax,
+                productType: "Avis"
+            },
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                }
+            },
+        ).then((res) => {
+            console.log(res.data);
+            setLoading(false)
+            alert('Tax has been updated');
+        });
+        setLoading(false)
+    }
 
     useEffect(() => {
         Axios.post(
@@ -33,6 +57,20 @@ const DashboardAdmin = () => {
         ).then((res) => {
             console.log(res.data.booking);
             setTransactions(res.data.booking);
+        });
+        console.log(localStorage.getItem('token'));
+        Axios.get(
+            `${API_URL}/api/booking/tax?productType=Avis`,
+            {},
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                }
+            },
+        ).then((res) => {
+            setAdminTax(res.data.tax.tax);
         });
     }, [])
 
@@ -69,10 +107,22 @@ const DashboardAdmin = () => {
                     </div>
                 </div>
                 <div className="row mt-5">
-                    <div class="col-sm-3 mb-3">
+                    <div class="col-sm-3 mb-3 d-flex justify-content-between w-100">
                         <div class="form-group">
                             <label for="sel1" class="form-label">Date Filter:</label>
                             <input class="form-control" type="date" className="dateadded form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="sel1" class="form-label">Admin Tax %:</label>
+                            <div className="d-flex flex-row align-items-end justify-content-center">
+                                <input class="form-control" style={{ padding: "8px" }} type="number" value={adminTax ?? 0} className="form-control me-2" onChange={(e) => setAdminTax(e.target.value)} />
+                                <button disabled={isLoading} type="button" class=" mt-2" onClick={() => handleChangeTax()} style={{
+                                    backgroundColor: "rgb(212, 0, 42)",
+                                    color: "rgb(255, 255, 255)",
+                                    padding: "8px",
+                                    borderRadius: "5px"
+                                }}>Save</button>
+                            </div>
                         </div>
                     </div>
                     <div className="col-md-12">
@@ -115,7 +165,7 @@ const DashboardAdmin = () => {
                         </table>
                     </div>
                 </div>
-            </div>
+            </div >
             <FooterOne />
         </>
     )
