@@ -13,6 +13,7 @@ const DashboardAdmin = () => {
     const [transactions, setTransactions] = useState([]);
     const [adminTax, setAdminTax] = useState(0);
     const [isLoading, setLoading] = useState(false)
+    const [fee24Hour, setFee24Hour] = useState(0);
 
     const formatDate = (va) => {
         const options = { month: 'long', day: 'numeric', year: 'numeric' };
@@ -39,6 +40,29 @@ const DashboardAdmin = () => {
             console.log(res.data);
             setLoading(false)
             alert('Tax has been updated');
+        });
+        setLoading(false)
+    }
+
+    const handleChangeFee24Hour = async () => {
+        setLoading(true)
+        await Axios.put(
+            `${API_URL}/api/booking/fee/cancel`,
+            {
+                tax: fee24Hour,
+                productType: "Avis"
+            },
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                }
+            },
+        ).then((res) => {
+            console.log(res.data);
+            setLoading(false)
+            alert('Fee has been updated');
         });
         setLoading(false)
     }
@@ -71,6 +95,20 @@ const DashboardAdmin = () => {
             },
         ).then((res) => {
             setAdminTax(res.data.tax.tax);
+        });
+
+        Axios.get(
+            `${API_URL}/api/booking/fee/cancel?productType=Avis`,
+            {},
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                }
+            },
+        ).then((res) => {
+            setFee24Hour(res.data.tax.tax);
         });
     }, [])
 
@@ -112,16 +150,30 @@ const DashboardAdmin = () => {
                             <label for="sel1" class="form-label">Date Filter:</label>
                             <input class="form-control" type="date" className="dateadded form-control" />
                         </div>
-                        <div class="form-group">
-                            <label for="sel1" class="form-label">Admin Tax %:</label>
-                            <div className="d-flex flex-row align-items-end justify-content-center">
-                                <input class="form-control" style={{ padding: "8px" }} type="number" value={adminTax ?? 0} className="form-control me-2" onChange={(e) => setAdminTax(e.target.value)} />
-                                <button disabled={isLoading} type="button" class=" mt-2" onClick={() => handleChangeTax()} style={{
-                                    backgroundColor: "rgb(212, 0, 42)",
-                                    color: "rgb(255, 255, 255)",
-                                    padding: "8px",
-                                    borderRadius: "5px"
-                                }}>Save</button>
+                        <div className="d-flex flex-column align-items-start">
+                            <div class="form-group">
+                                <label for="sel1" class="form-label">Admin Tax %:</label>
+                                <div className="d-flex flex-row align-items-end justify-content-center">
+                                    <input class="form-control" style={{ padding: "8px" }} type="number" value={adminTax ?? 0} className="form-control me-2" onChange={(e) => setAdminTax(e.target.value)} />
+                                    <button disabled={isLoading} type="button" class=" mt-2" onClick={() => handleChangeTax()} style={{
+                                        backgroundColor: "rgb(212, 0, 42)",
+                                        color: "rgb(255, 255, 255)",
+                                        padding: "8px",
+                                        borderRadius: "5px"
+                                    }}>Save</button>
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="sel1" class="form-label">Fee Charge Cancellation In 24 Hours:</label>
+                                <div className="d-flex flex-row align-items-end justify-content-center">
+                                    <input class="form-control" style={{ padding: "8px" }} type="number" value={fee24Hour ?? 0} className="form-control me-2" onChange={(e) => setFee24Hour(e.target.value)} />
+                                    <button disabled={isLoading} type="button" class=" mt-2" onClick={() => handleChangeFee24Hour()} style={{
+                                        backgroundColor: "rgb(212, 0, 42)",
+                                        color: "rgb(255, 255, 255)",
+                                        padding: "8px",
+                                        borderRadius: "5px"
+                                    }}>Save</button>
+                                </div>
                             </div>
                         </div>
                     </div>
