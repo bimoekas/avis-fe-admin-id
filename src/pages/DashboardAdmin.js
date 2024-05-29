@@ -3,10 +3,13 @@ import FooterOne from "../common/footer/FooterOne";
 import Axios from "axios";
 import { API_URL } from "../core/constant.js";
 import HeaderOne from "../common/header/HeaderOne";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 //Datatable Modules
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/jquery.dataTables.min.css";
 import $ from "jquery";
+import { format } from "date-fns";
 // import Title from '../Title';
 
 const DashboardAdmin = () => {
@@ -14,6 +17,56 @@ const DashboardAdmin = () => {
   const [adminTax, setAdminTax] = useState(0);
   const [isLoading, setLoading] = useState(false);
   const [fee24Hour, setFee24Hour] = useState(0);
+
+  const exportToExcel = () => {
+    const customizeExportData = transactions.map((item) => ({
+      BookingCode: item.booking_code,
+      Fullname: `${item.user.name} ${item.user.last_name}`,
+      Email: item.emailForm,
+      CarModel: item.rent_detail.car_model,
+      CarName: item.rent_detail.car_name,
+      CarImage: item.rent_detail.car_img,
+      StatusBooking: item.status_book,
+      PickupDate: format(new Date(item.pickup_date), "dd MMMM yyyy HH:mm"),
+      DropoffDate: format(new Date(item.return_date), "dd MMMM yyyy HH:mm"),
+      PickupLocation: item.pickup_loc,
+      DropoffLocation: item.return_loc,
+      Currency: item.transaction.link_midtrans ? "IDR" : "USD",
+      TotalPrice: item.total_price,
+      PaymentStatus: item.payment_status,
+      CreatedAt: format(
+        new Date(item.transaction.created_at),
+        "dd MMMM yyyy HH:mm"
+      ),
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(customizeExportData);
+    const columnWidths = [];
+
+    customizeExportData.forEach((row) => {
+      Object.keys(row).forEach((key, colIndex) => {
+        const cellValue = row[key]?.toString() || "";
+        const cellLength = cellValue.length;
+        columnWidths[colIndex] = Math.max(
+          columnWidths[colIndex] || key.length,
+          cellLength
+        );
+      });
+    });
+
+    worksheet["!cols"] = columnWidths.map((width) => ({ wch: width + 2 }));
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    const currentDate = format(new Date(), "dd-MMMM-yyyy");
+    saveAs(blob, `AVIS-Reservation-Data-${currentDate}.xlsx`);
+  };
 
   const formatDate = (va) => {
     const options = { month: "long", day: "numeric", year: "numeric" };
@@ -212,6 +265,15 @@ const DashboardAdmin = () => {
                 </div>
               </div>
             </div>
+          </div>
+          <div className="d-flex justify-content-end mb-3">
+            <button
+              type="button"
+              class="btn btn-success"
+              onClick={exportToExcel}
+            >
+              Export
+            </button>
           </div>
           <div className="col-md-12">
             <table id="example" class="display">
